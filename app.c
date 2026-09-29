@@ -160,7 +160,7 @@ void app(void)
         }
         while (simHasScroll())
         {
-            int y = 10 * simGetScroll();
+            int y = 5 * simGetScroll();
             float deltaCoeff = y / 100.0;
             reflectionCoeff += deltaCoeff;
             if (reflectionCoeff > 1.0) reflectionCoeff = 1.0;

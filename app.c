@@ -1,6 +1,3 @@
-#include <math.h>
-#include <stdio.h>
-
 #include "sim.h"
 
 #define COURANT_NUMBER_SQR (1.0 / 10.0)
@@ -115,7 +112,7 @@ void emulationStep(gridPtr grid1, gridPtr grid2, float reflectionCoeff,
     }
 
     // Change source cell
-    float f = AMPLITUDE * sin(t);
+    float f = AMPLITUDE * simCalcSinus(t);
     (*resultGrid)[sourceX][sourceY] += f;
 }
 

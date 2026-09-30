@@ -95,3 +95,7 @@ int simGetScroll() {
     }
   }
 }
+
+float simCalcSinus(float arg) {
+  return sin(arg);
+}

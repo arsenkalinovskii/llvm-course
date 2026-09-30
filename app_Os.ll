@@ -12,7 +12,7 @@ define dso_local void @initGrids(ptr noundef writeonly captures(none) initialize
 ; Function Attrs: mustprogress nocallback nofree nosync nounwind willreturn memory(argmem: readwrite)
 declare void @llvm.lifetime.start.p0(ptr captures(none)) #1
 
-; Function Attrs: nofree norecurse nounwind optsize sspstrong memory(argmem: readwrite, errnomem: write) uwtable
+; Function Attrs: nounwind optsize sspstrong uwtable
 define dso_local void @emulationStep(ptr noundef readonly captures(none) %0, ptr noundef captures(none) %1, float noundef %2, float noundef %3, i32 noundef %4, i32 noundef %5) local_unnamed_addr #2 {
   br label %7
 
@@ -111,9 +111,9 @@ define dso_local void @emulationStep(ptr noundef readonly captures(none) %0, ptr
   %89 = fptrunc double %88 to float
   store float %89, ptr %73, align 4, !tbaa !9
   %90 = icmp eq i64 %58, 511
-  br i1 %90, label %164, label %48, !llvm.loop !14
+  br i1 %90, label %162, label %48, !llvm.loop !14
 
-91:                                               ; preds = %164
+91:                                               ; preds = %162
   %92 = load float, ptr %0, align 4, !tbaa !9
   %93 = load float, ptr %1, align 4, !tbaa !9
   %94 = fneg float %93
@@ -180,64 +180,62 @@ define dso_local void @emulationStep(ptr noundef readonly captures(none) %0, ptr
   %152 = tail call double @llvm.fmuladd.f64(double %151, double 1.000000e-01, double %150)
   %153 = fptrunc double %152 to float
   store float %153, ptr %139, align 4, !tbaa !9
-  %154 = fpext float %3 to double
-  %155 = tail call double @sin(double noundef %154) #9, !tbaa !5
-  %156 = fmul double %155, 3.000000e+00
-  %157 = fptrunc double %156 to float
-  %158 = sext i32 %4 to i64
-  %159 = getelementptr inbounds [512 x float], ptr %1, i64 %158
-  %160 = sext i32 %5 to i64
-  %161 = getelementptr inbounds float, ptr %159, i64 %160
-  %162 = load float, ptr %161, align 4, !tbaa !9
-  %163 = fadd float %162, %157
-  store float %163, ptr %161, align 4, !tbaa !9
+  %154 = tail call float @simCalcSinus(float noundef %3) #8
+  %155 = fmul float %154, 3.000000e+00
+  %156 = sext i32 %4 to i64
+  %157 = getelementptr inbounds [512 x float], ptr %1, i64 %156
+  %158 = sext i32 %5 to i64
+  %159 = getelementptr inbounds float, ptr %157, i64 %158
+  %160 = load float, ptr %159, align 4, !tbaa !9
+  %161 = fadd float %160, %155
+  store float %161, ptr %159, align 4, !tbaa !9
   ret void
 
-164:                                              ; preds = %48, %164
-  %165 = phi i64 [ %172, %164 ], [ 1, %48 ]
-  %166 = getelementptr inbounds nuw [512 x float], ptr %0, i64 %165
+162:                                              ; preds = %48, %162
+  %163 = phi i64 [ %170, %162 ], [ 1, %48 ]
+  %164 = getelementptr inbounds nuw [512 x float], ptr %0, i64 %163
+  %165 = load float, ptr %164, align 4, !tbaa !9
+  %166 = getelementptr inbounds nuw [512 x float], ptr %1, i64 %163
   %167 = load float, ptr %166, align 4, !tbaa !9
-  %168 = getelementptr inbounds nuw [512 x float], ptr %1, i64 %165
-  %169 = load float, ptr %168, align 4, !tbaa !9
-  %170 = fneg float %169
-  %171 = tail call float @llvm.fmuladd.f32(float %167, float 2.000000e+00, float %170)
-  %172 = add nuw nsw i64 %165, 1
-  %173 = getelementptr inbounds nuw [512 x float], ptr %0, i64 %172
+  %168 = fneg float %167
+  %169 = tail call float @llvm.fmuladd.f32(float %165, float 2.000000e+00, float %168)
+  %170 = add nuw nsw i64 %163, 1
+  %171 = getelementptr inbounds nuw [512 x float], ptr %0, i64 %170
+  %172 = load float, ptr %171, align 4, !tbaa !9
+  %173 = getelementptr i8, ptr %164, i64 -2048
   %174 = load float, ptr %173, align 4, !tbaa !9
-  %175 = getelementptr i8, ptr %166, i64 -2048
-  %176 = load float, ptr %175, align 4, !tbaa !9
-  %177 = fadd float %174, %176
-  %178 = getelementptr inbounds nuw i8, ptr %166, i64 4
-  %179 = load float, ptr %178, align 4, !tbaa !9
-  %180 = tail call float @llvm.fmuladd.f32(float %14, float %179, float %177)
-  %181 = tail call float @llvm.fmuladd.f32(float %167, float -4.000000e+00, float %180)
-  %182 = fpext float %171 to double
-  %183 = fpext float %181 to double
-  %184 = tail call double @llvm.fmuladd.f64(double %183, double 1.000000e-01, double %182)
-  %185 = fptrunc double %184 to float
-  store float %185, ptr %168, align 4, !tbaa !9
+  %175 = fadd float %172, %174
+  %176 = getelementptr inbounds nuw i8, ptr %164, i64 4
+  %177 = load float, ptr %176, align 4, !tbaa !9
+  %178 = tail call float @llvm.fmuladd.f32(float %14, float %177, float %175)
+  %179 = tail call float @llvm.fmuladd.f32(float %165, float -4.000000e+00, float %178)
+  %180 = fpext float %169 to double
+  %181 = fpext float %179 to double
+  %182 = tail call double @llvm.fmuladd.f64(double %181, double 1.000000e-01, double %180)
+  %183 = fptrunc double %182 to float
+  store float %183, ptr %166, align 4, !tbaa !9
+  %184 = getelementptr inbounds nuw i8, ptr %164, i64 2044
+  %185 = load float, ptr %184, align 4, !tbaa !9
   %186 = getelementptr inbounds nuw i8, ptr %166, i64 2044
   %187 = load float, ptr %186, align 4, !tbaa !9
-  %188 = getelementptr inbounds nuw i8, ptr %168, i64 2044
-  %189 = load float, ptr %188, align 4, !tbaa !9
-  %190 = fneg float %189
-  %191 = tail call float @llvm.fmuladd.f32(float %187, float 2.000000e+00, float %190)
-  %192 = getelementptr inbounds nuw i8, ptr %173, i64 2044
+  %188 = fneg float %187
+  %189 = tail call float @llvm.fmuladd.f32(float %185, float 2.000000e+00, float %188)
+  %190 = getelementptr inbounds nuw i8, ptr %171, i64 2044
+  %191 = load float, ptr %190, align 4, !tbaa !9
+  %192 = getelementptr i8, ptr %164, i64 -4
   %193 = load float, ptr %192, align 4, !tbaa !9
-  %194 = getelementptr i8, ptr %166, i64 -4
-  %195 = load float, ptr %194, align 4, !tbaa !9
-  %196 = fadd float %193, %195
-  %197 = getelementptr inbounds nuw i8, ptr %166, i64 2040
-  %198 = load float, ptr %197, align 4, !tbaa !9
-  %199 = tail call float @llvm.fmuladd.f32(float %14, float %198, float %196)
-  %200 = tail call float @llvm.fmuladd.f32(float %187, float -4.000000e+00, float %199)
-  %201 = fpext float %191 to double
-  %202 = fpext float %200 to double
-  %203 = tail call double @llvm.fmuladd.f64(double %202, double 1.000000e-01, double %201)
-  %204 = fptrunc double %203 to float
-  store float %204, ptr %188, align 4, !tbaa !9
-  %205 = icmp eq i64 %172, 511
-  br i1 %205, label %91, label %164, !llvm.loop !15
+  %194 = fadd float %191, %193
+  %195 = getelementptr inbounds nuw i8, ptr %164, i64 2040
+  %196 = load float, ptr %195, align 4, !tbaa !9
+  %197 = tail call float @llvm.fmuladd.f32(float %14, float %196, float %194)
+  %198 = tail call float @llvm.fmuladd.f32(float %185, float -4.000000e+00, float %197)
+  %199 = fpext float %189 to double
+  %200 = fpext float %198 to double
+  %201 = tail call double @llvm.fmuladd.f64(double %200, double 1.000000e-01, double %199)
+  %202 = fptrunc double %201 to float
+  store float %202, ptr %186, align 4, !tbaa !9
+  %203 = icmp eq i64 %170, 511
+  br i1 %203, label %91, label %162, !llvm.loop !15
 }
 
 ; Function Attrs: mustprogress nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
@@ -246,8 +244,8 @@ declare float @llvm.fmuladd.f32(float, float, float) #3
 ; Function Attrs: mustprogress nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
 declare double @llvm.fmuladd.f64(double, double, double) #3
 
-; Function Attrs: mustprogress nocallback nofree nounwind optsize willreturn memory(errnomem: write)
-declare double @sin(double noundef) local_unnamed_addr #4
+; Function Attrs: optsize
+declare float @simCalcSinus(float noundef) local_unnamed_addr #4
 
 ; Function Attrs: mustprogress nofree norecurse nosync nounwind optsize sspstrong willreturn memory(none) uwtable
 define dso_local noundef float @saturate(float noundef %0) local_unnamed_addr #5 {
@@ -269,7 +267,7 @@ define dso_local noundef float @saturate(float noundef %0) local_unnamed_addr #5
 ; Function Attrs: noreturn nounwind optsize sspstrong uwtable
 define dso_local void @app() local_unnamed_addr #6 {
   %1 = alloca [2 x [512 x [512 x float]]], align 16
-  call void @llvm.lifetime.start.p0(ptr nonnull %1) #10
+  call void @llvm.lifetime.start.p0(ptr nonnull %1) #9
   %2 = getelementptr inbounds nuw i8, ptr %1, i64 1048576
   call void @llvm.memset.p0.i64(ptr noundef nonnull align 16 dereferenceable(2097152) %1, i8 0, i64 2097152, i1 false), !tbaa !9
   br label %3
@@ -281,7 +279,7 @@ define dso_local void @app() local_unnamed_addr #6 {
   %7 = phi i32 [ 256, %0 ], [ %53, %72 ]
   %8 = phi ptr [ %2, %0 ], [ %9, %72 ]
   %9 = phi ptr [ %1, %0 ], [ %8, %72 ]
-  call void @emulationStep(ptr noundef %9, ptr noundef %8, float noundef %4, float noundef %5, i32 noundef %7, i32 noundef %6) #11
+  call void @emulationStep(ptr noundef %9, ptr noundef %8, float noundef %4, float noundef %5, i32 noundef %7, i32 noundef %6) #10
   br label %10
 
 10:                                               ; preds = %3, %17
@@ -291,8 +289,8 @@ define dso_local void @app() local_unnamed_addr #6 {
   br label %20
 
 14:                                               ; preds = %17
-  tail call void (...) @simFlush() #9
-  %15 = tail call i32 (...) @simHasClick() #9
+  tail call void (...) @simFlush() #8
+  %15 = tail call i32 (...) @simHasClick() #8
   %16 = icmp eq i32 %15, 0
   br i1 %16, label %51, label %42
 
@@ -327,13 +325,13 @@ define dso_local void @app() local_unnamed_addr #6 {
   %37 = mul nuw nsw i32 %36, 65793
   %38 = or disjoint i32 %37, -16777216
   %39 = trunc nuw nsw i64 %21 to i32
-  tail call void @simPutPixel(i32 noundef %13, i32 noundef %39, i32 noundef %38) #9
+  tail call void @simPutPixel(i32 noundef %13, i32 noundef %39, i32 noundef %38) #8
   %40 = add nuw nsw i64 %21, 1
   %41 = icmp eq i64 %40, 512
   br i1 %41, label %17, label %20, !llvm.loop !17
 
 42:                                               ; preds = %14
-  %43 = tail call i32 (...) @simGetClick() #9
+  %43 = tail call i32 (...) @simGetClick() #8
   %44 = ashr i32 %43, 16
   %45 = and i32 %43, 65535
   %46 = icmp ult i32 %44, 512
@@ -346,13 +344,13 @@ define dso_local void @app() local_unnamed_addr #6 {
 51:                                               ; preds = %42, %14
   %52 = phi i32 [ %49, %42 ], [ %6, %14 ]
   %53 = phi i32 [ %50, %42 ], [ %7, %14 ]
-  %54 = tail call i32 (...) @simHasScroll() #9
+  %54 = tail call i32 (...) @simHasScroll() #8
   %55 = icmp eq i32 %54, 0
   br i1 %55, label %72, label %56
 
 56:                                               ; preds = %51, %68
   %57 = phi float [ %69, %68 ], [ %4, %51 ]
-  %58 = tail call i32 (...) @simGetScroll() #9
+  %58 = tail call i32 (...) @simGetScroll() #8
   %59 = mul nsw i32 %58, 5
   %60 = sitofp i32 %59 to double
   %61 = fdiv double %60, 1.000000e+02
@@ -370,7 +368,7 @@ define dso_local void @app() local_unnamed_addr #6 {
 
 68:                                               ; preds = %56, %65, %67
   %69 = phi float [ %63, %65 ], [ 0.000000e+00, %67 ], [ 1.000000e+00, %56 ]
-  %70 = tail call i32 (...) @simHasScroll() #9
+  %70 = tail call i32 (...) @simHasScroll() #8
   %71 = icmp eq i32 %70, 0
   br i1 %71, label %72, label %56, !llvm.loop !18
 
@@ -383,38 +381,37 @@ define dso_local void @app() local_unnamed_addr #6 {
 }
 
 ; Function Attrs: optsize
-declare void @simPutPixel(i32 noundef, i32 noundef, i32 noundef) local_unnamed_addr #7
+declare void @simPutPixel(i32 noundef, i32 noundef, i32 noundef) local_unnamed_addr #4
 
 ; Function Attrs: optsize
-declare void @simFlush(...) local_unnamed_addr #7
+declare void @simFlush(...) local_unnamed_addr #4
 
 ; Function Attrs: optsize
-declare i32 @simHasClick(...) local_unnamed_addr #7
+declare i32 @simHasClick(...) local_unnamed_addr #4
 
 ; Function Attrs: optsize
-declare i32 @simGetClick(...) local_unnamed_addr #7
+declare i32 @simGetClick(...) local_unnamed_addr #4
 
 ; Function Attrs: optsize
-declare i32 @simHasScroll(...) local_unnamed_addr #7
+declare i32 @simHasScroll(...) local_unnamed_addr #4
 
 ; Function Attrs: optsize
-declare i32 @simGetScroll(...) local_unnamed_addr #7
+declare i32 @simGetScroll(...) local_unnamed_addr #4
 
 ; Function Attrs: nocallback nofree nounwind willreturn memory(argmem: write)
-declare void @llvm.memset.p0.i64(ptr writeonly captures(none), i8, i64, i1 immarg) #8
+declare void @llvm.memset.p0.i64(ptr writeonly captures(none), i8, i64, i1 immarg) #7
 
 attributes #0 = { mustprogress nofree norecurse nosync nounwind optsize sspstrong willreturn memory(argmem: write) uwtable "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #1 = { mustprogress nocallback nofree nosync nounwind willreturn memory(argmem: readwrite) }
-attributes #2 = { nofree norecurse nounwind optsize sspstrong memory(argmem: readwrite, errnomem: write) uwtable "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #2 = { nounwind optsize sspstrong uwtable "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #3 = { mustprogress nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none) }
-attributes #4 = { mustprogress nocallback nofree nounwind optsize willreturn memory(errnomem: write) "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #4 = { optsize "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #5 = { mustprogress nofree norecurse nosync nounwind optsize sspstrong willreturn memory(none) uwtable "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #6 = { noreturn nounwind optsize sspstrong uwtable "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
-attributes #7 = { optsize "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
-attributes #8 = { nocallback nofree nounwind willreturn memory(argmem: write) }
-attributes #9 = { nounwind optsize }
-attributes #10 = { nounwind }
-attributes #11 = { optsize }
+attributes #7 = { nocallback nofree nounwind willreturn memory(argmem: write) }
+attributes #8 = { nounwind optsize }
+attributes #9 = { nounwind }
+attributes #10 = { optsize }
 
 !llvm.module.flags = !{!0, !1, !2, !3}
 !llvm.ident = !{!4}

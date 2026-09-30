@@ -667,8 +667,8 @@ define dso_local void @emulationStep(ptr noundef %0, ptr noundef %1, float nound
   %517 = getelementptr inbounds [512 x float], ptr %516, i64 0, i64 511
   store float %514, ptr %517, align 4
   %518 = load float, ptr %10, align 4
-  %519 = fpext float %518 to double
-  %520 = call double @sin(double noundef %519) #4
+  %519 = call float @simCalcSinus(float noundef %518)
+  %520 = fpext float %519 to double
   %521 = fmul double 3.000000e+00, %520
   %522 = fptrunc double %521 to float
   store float %522, ptr %37, align 4
@@ -692,8 +692,7 @@ declare float @llvm.fmuladd.f32(float, float, float) #1
 ; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
 declare double @llvm.fmuladd.f64(double, double, double) #1
 
-; Function Attrs: nounwind
-declare double @sin(double noundef) #2
+declare float @simCalcSinus(float noundef) #2
 
 ; Function Attrs: noinline nounwind optnone sspstrong uwtable
 define dso_local float @saturate(float noundef %0) #0 {
@@ -941,23 +940,21 @@ define dso_local void @app() #0 {
   br label %23
 }
 
-declare void @simPutPixel(i32 noundef, i32 noundef, i32 noundef) #3
+declare void @simPutPixel(i32 noundef, i32 noundef, i32 noundef) #2
 
-declare void @simFlush(...) #3
+declare void @simFlush(...) #2
 
-declare i32 @simHasClick(...) #3
+declare i32 @simHasClick(...) #2
 
-declare i32 @simGetClick(...) #3
+declare i32 @simGetClick(...) #2
 
-declare i32 @simHasScroll(...) #3
+declare i32 @simHasScroll(...) #2
 
-declare i32 @simGetScroll(...) #3
+declare i32 @simGetScroll(...) #2
 
 attributes #0 = { noinline nounwind optnone sspstrong uwtable "frame-pointer"="all" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #1 = { nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none) }
-attributes #2 = { nounwind "frame-pointer"="all" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
-attributes #3 = { "frame-pointer"="all" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
-attributes #4 = { nounwind }
+attributes #2 = { "frame-pointer"="all" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 
 !llvm.module.flags = !{!0, !1, !2, !3, !4}
 !llvm.ident = !{!5}

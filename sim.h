@@ -15,6 +15,7 @@ int simHasClick();
 int simHasScroll();
 int simGetClick();
 int simGetScroll();
+float simCalcSinus(float);
 #endif // __sim__
 
 #endif // SIM_H

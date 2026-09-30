@@ -3,8 +3,6 @@ source_filename = "app.c"
 target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-pc-linux-gnu"
 
-@.str = private unnamed_addr constant [27 x i8] c"reflection coefficient %f\0A\00", align 1
-
 ; Function Attrs: noinline nounwind optnone sspstrong uwtable
 define dso_local void @initGrids(ptr noundef %0) #0 {
   %2 = alloca ptr, align 8
@@ -761,7 +759,7 @@ define dso_local void @app() #0 {
   store float 5.000000e-01, ptr %7, align 4
   br label %23
 
-23:                                               ; preds = %0, %127
+23:                                               ; preds = %0, %124
   %24 = load ptr, ptr %2, align 8
   %25 = load ptr, ptr %3, align 8
   %26 = load float, ptr %7, align 4
@@ -891,11 +889,11 @@ define dso_local void @app() #0 {
 100:                                              ; preds = %123, %99
   %101 = call i32 (...) @simHasScroll()
   %102 = icmp ne i32 %101, 0
-  br i1 %102, label %103, label %127
+  br i1 %102, label %103, label %124
 
 103:                                              ; preds = %100
   %104 = call i32 (...) @simGetScroll()
-  %105 = mul nsw i32 10, %104
+  %105 = mul nsw i32 5, %104
   store i32 %105, ptr %17, align 4
   %106 = load i32, ptr %17, align 4
   %107 = sitofp i32 %106 to double
@@ -929,23 +927,20 @@ define dso_local void @app() #0 {
   br label %123
 
 123:                                              ; preds = %122, %116
-  %124 = load float, ptr %7, align 4
-  %125 = fpext float %124 to double
-  %126 = call i32 (ptr, ...) @printf(ptr noundef @.str, double noundef %125)
   br label %100, !llvm.loop !17
 
-127:                                              ; preds = %100
-  %128 = load ptr, ptr %2, align 8
-  store ptr %128, ptr %19, align 8
-  %129 = load ptr, ptr %3, align 8
-  store ptr %129, ptr %2, align 8
-  %130 = load ptr, ptr %19, align 8
-  store ptr %130, ptr %3, align 8
-  %131 = load float, ptr %6, align 4
-  %132 = fpext float %131 to double
-  %133 = fadd double %132, 5.000000e-02
-  %134 = fptrunc double %133 to float
-  store float %134, ptr %6, align 4
+124:                                              ; preds = %100
+  %125 = load ptr, ptr %2, align 8
+  store ptr %125, ptr %19, align 8
+  %126 = load ptr, ptr %3, align 8
+  store ptr %126, ptr %2, align 8
+  %127 = load ptr, ptr %19, align 8
+  store ptr %127, ptr %3, align 8
+  %128 = load float, ptr %6, align 4
+  %129 = fpext float %128 to double
+  %130 = fadd double %129, 5.000000e-02
+  %131 = fptrunc double %130 to float
+  store float %131, ptr %6, align 4
   br label %23
 }
 
@@ -960,8 +955,6 @@ declare i32 @simGetClick(...) #3
 declare i32 @simHasScroll(...) #3
 
 declare i32 @simGetScroll(...) #3
-
-declare i32 @printf(ptr noundef, ...) #3
 
 attributes #0 = { noinline nounwind optnone sspstrong uwtable "frame-pointer"="all" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #1 = { nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none) }

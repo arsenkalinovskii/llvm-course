@@ -3,8 +3,6 @@ source_filename = "app.c"
 target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-pc-linux-gnu"
 
-@.str = private unnamed_addr constant [27 x i8] c"reflection coefficient %f\0A\00", align 1
-
 ; Function Attrs: mustprogress nofree norecurse nosync nounwind sspstrong willreturn memory(argmem: write) uwtable
 define dso_local void @initGrids(ptr noundef writeonly captures(none) initializes((0, 2097152)) %0) local_unnamed_addr #0 {
   tail call void @llvm.memset.p0.i64(ptr noundef nonnull align 4 dereferenceable(2097152) %0, i8 0, i64 2097152, i1 false), !tbaa !9
@@ -471,7 +469,7 @@ define dso_local void @emulationStep(ptr noundef readonly captures(none) %0, ptr
   %414 = fptrunc double %413 to float
   store float %414, ptr %400, align 4, !tbaa !9
   %415 = fpext float %3 to double
-  %416 = tail call double @sin(double noundef %415) #11, !tbaa !5
+  %416 = tail call double @sin(double noundef %415) #10, !tbaa !5
   %417 = fmul double %416, 3.000000e+00
   %418 = fptrunc double %417 to float
   %419 = sext i32 %4 to i64
@@ -559,18 +557,18 @@ define dso_local noundef float @saturate(float noundef %0) local_unnamed_addr #5
 ; Function Attrs: noreturn nounwind sspstrong uwtable
 define dso_local void @app() local_unnamed_addr #6 {
   %1 = alloca [2 x [512 x [512 x float]]], align 16
-  call void @llvm.lifetime.start.p0(ptr nonnull %1) #11
+  call void @llvm.lifetime.start.p0(ptr nonnull %1) #10
   %2 = getelementptr inbounds nuw i8, ptr %1, i64 1048576
   call void @llvm.memset.p0.i64(ptr noundef nonnull align 16 dereferenceable(2097152) %1, i8 0, i64 2097152, i1 false), !tbaa !9
   br label %3
 
-3:                                                ; preds = %78, %0
-  %4 = phi float [ 5.000000e-01, %0 ], [ %79, %78 ]
-  %5 = phi float [ 0.000000e+00, %0 ], [ %82, %78 ]
-  %6 = phi i32 [ 256, %0 ], [ %43, %78 ]
-  %7 = phi i32 [ 256, %0 ], [ %44, %78 ]
-  %8 = phi ptr [ %2, %0 ], [ %9, %78 ]
-  %9 = phi ptr [ %1, %0 ], [ %8, %78 ]
+3:                                                ; preds = %76, %0
+  %4 = phi float [ 5.000000e-01, %0 ], [ %77, %76 ]
+  %5 = phi float [ 0.000000e+00, %0 ], [ %80, %76 ]
+  %6 = phi i32 [ 256, %0 ], [ %43, %76 ]
+  %7 = phi i32 [ 256, %0 ], [ %44, %76 ]
+  %8 = phi ptr [ %2, %0 ], [ %9, %76 ]
+  %9 = phi ptr [ %1, %0 ], [ %8, %76 ]
   call void @emulationStep(ptr noundef %9, ptr noundef %8, float noundef %4, float noundef %5, i32 noundef %7, i32 noundef %6)
   br label %10
 
@@ -581,8 +579,8 @@ define dso_local void @app() local_unnamed_addr #6 {
   br label %20
 
 14:                                               ; preds = %17
-  tail call void (...) @simFlush() #11
-  %15 = tail call i32 (...) @simHasClick() #11
+  tail call void (...) @simFlush() #10
+  %15 = tail call i32 (...) @simHasClick() #10
   %16 = icmp eq i32 %15, 0
   br i1 %16, label %42, label %47
 
@@ -617,7 +615,7 @@ define dso_local void @app() local_unnamed_addr #6 {
   %37 = mul nuw nsw i32 %36, 65793
   %38 = or disjoint i32 %37, -16777216
   %39 = trunc nuw nsw i64 %21 to i32
-  tail call void @simPutPixel(i32 noundef %13, i32 noundef %39, i32 noundef %38) #11
+  tail call void @simPutPixel(i32 noundef %13, i32 noundef %39, i32 noundef %38) #10
   %40 = add nuw nsw i64 %21, 1
   %41 = icmp eq i64 %40, 512
   br i1 %41, label %17, label %20, !llvm.loop !37
@@ -625,14 +623,14 @@ define dso_local void @app() local_unnamed_addr #6 {
 42:                                               ; preds = %47, %14
   %43 = phi i32 [ %6, %14 ], [ %56, %47 ]
   %44 = phi i32 [ %7, %14 ], [ %57, %47 ]
-  %45 = tail call i32 (...) @simHasScroll() #11
+  %45 = tail call i32 (...) @simHasScroll() #10
   %46 = icmp eq i32 %45, 0
-  br i1 %46, label %78, label %60
+  br i1 %46, label %76, label %60
 
 47:                                               ; preds = %14, %47
   %48 = phi i32 [ %57, %47 ], [ %7, %14 ]
   %49 = phi i32 [ %56, %47 ], [ %6, %14 ]
-  %50 = tail call i32 (...) @simGetClick() #11
+  %50 = tail call i32 (...) @simGetClick() #10
   %51 = ashr i32 %50, 16
   %52 = and i32 %50, 65535
   %53 = icmp ult i32 %51, 512
@@ -640,14 +638,14 @@ define dso_local void @app() local_unnamed_addr #6 {
   %55 = select i1 %53, i1 %54, i1 false
   %56 = select i1 %55, i32 %52, i32 %49
   %57 = select i1 %55, i32 %51, i32 %48
-  %58 = tail call i32 (...) @simHasClick() #11
+  %58 = tail call i32 (...) @simHasClick() #10
   %59 = icmp eq i32 %58, 0
   br i1 %59, label %42, label %47, !llvm.loop !38
 
 60:                                               ; preds = %42, %72
   %61 = phi float [ %73, %72 ], [ %4, %42 ]
-  %62 = tail call i32 (...) @simGetScroll() #11
-  %63 = mul nsw i32 %62, 10
+  %62 = tail call i32 (...) @simGetScroll() #10
+  %63 = mul nsw i32 %62, 5
   %64 = sitofp i32 %63 to double
   %65 = fdiv double %64, 1.000000e+02
   %66 = fptrunc double %65 to float
@@ -664,17 +662,15 @@ define dso_local void @app() local_unnamed_addr #6 {
 
 72:                                               ; preds = %60, %69, %71
   %73 = phi float [ %67, %69 ], [ 0.000000e+00, %71 ], [ 1.000000e+00, %60 ]
-  %74 = fpext float %73 to double
-  %75 = tail call i32 (ptr, ...) @printf(ptr noundef nonnull dereferenceable(1) @.str, double noundef %74)
-  %76 = tail call i32 (...) @simHasScroll() #11
-  %77 = icmp eq i32 %76, 0
-  br i1 %77, label %78, label %60, !llvm.loop !39
+  %74 = tail call i32 (...) @simHasScroll() #10
+  %75 = icmp eq i32 %74, 0
+  br i1 %75, label %76, label %60, !llvm.loop !39
 
-78:                                               ; preds = %72, %42
-  %79 = phi float [ %4, %42 ], [ %73, %72 ]
-  %80 = fpext float %5 to double
-  %81 = fadd double %80, 5.000000e-02
-  %82 = fptrunc double %81 to float
+76:                                               ; preds = %72, %42
+  %77 = phi float [ %4, %42 ], [ %73, %72 ]
+  %78 = fpext float %5 to double
+  %79 = fadd double %78, 5.000000e-02
+  %80 = fptrunc double %79 to float
   br label %3
 }
 
@@ -690,17 +686,14 @@ declare i32 @simHasScroll(...) local_unnamed_addr #7
 
 declare i32 @simGetScroll(...) local_unnamed_addr #7
 
-; Function Attrs: nofree nounwind
-declare noundef i32 @printf(ptr noundef readonly captures(none), ...) local_unnamed_addr #8
-
 ; Function Attrs: nocallback nofree nounwind willreturn memory(argmem: write)
-declare void @llvm.memset.p0.i64(ptr writeonly captures(none), i8, i64, i1 immarg) #9
+declare void @llvm.memset.p0.i64(ptr writeonly captures(none), i8, i64, i1 immarg) #8
 
 ; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
-declare <4 x float> @llvm.fmuladd.v4f32(<4 x float>, <4 x float>, <4 x float>) #10
+declare <4 x float> @llvm.fmuladd.v4f32(<4 x float>, <4 x float>, <4 x float>) #9
 
 ; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
-declare <4 x double> @llvm.fmuladd.v4f64(<4 x double>, <4 x double>, <4 x double>) #10
+declare <4 x double> @llvm.fmuladd.v4f64(<4 x double>, <4 x double>, <4 x double>) #9
 
 attributes #0 = { mustprogress nofree norecurse nosync nounwind sspstrong willreturn memory(argmem: write) uwtable "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #1 = { mustprogress nocallback nofree nosync nounwind willreturn memory(argmem: readwrite) }
@@ -710,10 +703,9 @@ attributes #4 = { mustprogress nocallback nofree nounwind willreturn memory(errn
 attributes #5 = { mustprogress nofree norecurse nosync nounwind sspstrong willreturn memory(none) uwtable "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #6 = { noreturn nounwind sspstrong uwtable "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #7 = { "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
-attributes #8 = { nofree nounwind "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
-attributes #9 = { nocallback nofree nounwind willreturn memory(argmem: write) }
-attributes #10 = { nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none) }
-attributes #11 = { nounwind }
+attributes #8 = { nocallback nofree nounwind willreturn memory(argmem: write) }
+attributes #9 = { nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none) }
+attributes #10 = { nounwind }
 
 !llvm.module.flags = !{!0, !1, !2, !3}
 !llvm.ident = !{!4}

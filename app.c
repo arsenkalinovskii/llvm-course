@@ -165,7 +165,6 @@ void app(void)
             reflectionCoeff += deltaCoeff;
             if (reflectionCoeff > 1.0) reflectionCoeff = 1.0;
             else if (reflectionCoeff < 0.0) reflectionCoeff = 0.0;
-            printf("reflection coefficient %f\n", reflectionCoeff);
         }
         gridPtr temp = grid1;
         grid1 = grid2;

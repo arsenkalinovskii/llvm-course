@@ -62,13 +62,6 @@ int simHasClick() {
   return SDL_TRUE == SDL_HasEvent(SDL_MOUSEBUTTONDOWN);
 }
 
-int simGetMouseState(int *x, int *y) {
-  SDL_PumpEvents();
-  assert(SDL_TRUE != SDL_HasEvent(SDL_QUIT) && "User-requested quit");
-  Uint32 buttons = SDL_GetMouseState(x, y);
-  return (buttons & SDL_BUTTON(SDL_BUTTON_LEFT)) != 0;
-}
-
 int simHasScroll() {
     SDL_PumpEvents();
     assert(SDL_TRUE != SDL_HasEvent(SDL_QUIT) && "User-requested quit");

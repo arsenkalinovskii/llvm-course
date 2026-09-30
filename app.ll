@@ -759,7 +759,7 @@ define dso_local void @app() #0 {
   store float 5.000000e-01, ptr %7, align 4
   br label %23
 
-23:                                               ; preds = %0, %124
+23:                                               ; preds = %0, %123
   %24 = load ptr, ptr %2, align 8
   %25 = load ptr, ptr %3, align 8
   %26 = load float, ptr %7, align 4
@@ -838,109 +838,106 @@ define dso_local void @app() #0 {
 
 74:                                               ; preds = %30
   call void (...) @simFlush()
-  br label %75
+  %75 = call i32 (...) @simHasClick()
+  %76 = icmp ne i32 %75, 0
+  br i1 %76, label %77, label %98
 
-75:                                               ; preds = %98, %74
-  %76 = call i32 (...) @simHasClick()
-  %77 = icmp ne i32 %76, 0
-  br i1 %77, label %78, label %99
+77:                                               ; preds = %74
+  %78 = call i32 (...) @simGetClick()
+  store i32 %78, ptr %14, align 4
+  %79 = load i32, ptr %14, align 4
+  %80 = ashr i32 %79, 16
+  store i32 %80, ptr %15, align 4
+  %81 = load i32, ptr %14, align 4
+  %82 = and i32 %81, 65535
+  store i32 %82, ptr %16, align 4
+  %83 = load i32, ptr %15, align 4
+  %84 = icmp sge i32 %83, 0
+  br i1 %84, label %85, label %97
 
-78:                                               ; preds = %75
-  %79 = call i32 (...) @simGetClick()
-  store i32 %79, ptr %14, align 4
-  %80 = load i32, ptr %14, align 4
-  %81 = ashr i32 %80, 16
-  store i32 %81, ptr %15, align 4
-  %82 = load i32, ptr %14, align 4
-  %83 = and i32 %82, 65535
-  store i32 %83, ptr %16, align 4
-  %84 = load i32, ptr %15, align 4
-  %85 = icmp sge i32 %84, 0
-  br i1 %85, label %86, label %98
+85:                                               ; preds = %77
+  %86 = load i32, ptr %15, align 4
+  %87 = icmp slt i32 %86, 512
+  br i1 %87, label %88, label %97
 
-86:                                               ; preds = %78
-  %87 = load i32, ptr %15, align 4
-  %88 = icmp slt i32 %87, 512
-  br i1 %88, label %89, label %98
+88:                                               ; preds = %85
+  %89 = load i32, ptr %16, align 4
+  %90 = icmp sge i32 %89, 0
+  br i1 %90, label %91, label %97
 
-89:                                               ; preds = %86
-  %90 = load i32, ptr %16, align 4
-  %91 = icmp sge i32 %90, 0
-  br i1 %91, label %92, label %98
+91:                                               ; preds = %88
+  %92 = load i32, ptr %16, align 4
+  %93 = icmp slt i32 %92, 512
+  br i1 %93, label %94, label %97
 
-92:                                               ; preds = %89
-  %93 = load i32, ptr %16, align 4
-  %94 = icmp slt i32 %93, 512
-  br i1 %94, label %95, label %98
+94:                                               ; preds = %91
+  %95 = load i32, ptr %15, align 4
+  store i32 %95, ptr %4, align 4
+  %96 = load i32, ptr %16, align 4
+  store i32 %96, ptr %5, align 4
+  br label %97
 
-95:                                               ; preds = %92
-  %96 = load i32, ptr %15, align 4
-  store i32 %96, ptr %4, align 4
-  %97 = load i32, ptr %16, align 4
-  store i32 %97, ptr %5, align 4
+97:                                               ; preds = %94, %91, %88, %85, %77
   br label %98
 
-98:                                               ; preds = %95, %92, %89, %86, %78
-  br label %75, !llvm.loop !16
+98:                                               ; preds = %97, %74
+  br label %99
 
-99:                                               ; preds = %75
-  br label %100
+99:                                               ; preds = %122, %98
+  %100 = call i32 (...) @simHasScroll()
+  %101 = icmp ne i32 %100, 0
+  br i1 %101, label %102, label %123
 
-100:                                              ; preds = %123, %99
-  %101 = call i32 (...) @simHasScroll()
-  %102 = icmp ne i32 %101, 0
-  br i1 %102, label %103, label %124
+102:                                              ; preds = %99
+  %103 = call i32 (...) @simGetScroll()
+  %104 = mul nsw i32 5, %103
+  store i32 %104, ptr %17, align 4
+  %105 = load i32, ptr %17, align 4
+  %106 = sitofp i32 %105 to double
+  %107 = fdiv double %106, 1.000000e+02
+  %108 = fptrunc double %107 to float
+  store float %108, ptr %18, align 4
+  %109 = load float, ptr %18, align 4
+  %110 = load float, ptr %7, align 4
+  %111 = fadd float %110, %109
+  store float %111, ptr %7, align 4
+  %112 = load float, ptr %7, align 4
+  %113 = fpext float %112 to double
+  %114 = fcmp ogt double %113, 1.000000e+00
+  br i1 %114, label %115, label %116
 
-103:                                              ; preds = %100
-  %104 = call i32 (...) @simGetScroll()
-  %105 = mul nsw i32 5, %104
-  store i32 %105, ptr %17, align 4
-  %106 = load i32, ptr %17, align 4
-  %107 = sitofp i32 %106 to double
-  %108 = fdiv double %107, 1.000000e+02
-  %109 = fptrunc double %108 to float
-  store float %109, ptr %18, align 4
-  %110 = load float, ptr %18, align 4
-  %111 = load float, ptr %7, align 4
-  %112 = fadd float %111, %110
-  store float %112, ptr %7, align 4
-  %113 = load float, ptr %7, align 4
-  %114 = fpext float %113 to double
-  %115 = fcmp ogt double %114, 1.000000e+00
-  br i1 %115, label %116, label %117
-
-116:                                              ; preds = %103
+115:                                              ; preds = %102
   store float 1.000000e+00, ptr %7, align 4
-  br label %123
-
-117:                                              ; preds = %103
-  %118 = load float, ptr %7, align 4
-  %119 = fpext float %118 to double
-  %120 = fcmp olt double %119, 0.000000e+00
-  br i1 %120, label %121, label %122
-
-121:                                              ; preds = %117
-  store float 0.000000e+00, ptr %7, align 4
   br label %122
 
-122:                                              ; preds = %121, %117
-  br label %123
+116:                                              ; preds = %102
+  %117 = load float, ptr %7, align 4
+  %118 = fpext float %117 to double
+  %119 = fcmp olt double %118, 0.000000e+00
+  br i1 %119, label %120, label %121
 
-123:                                              ; preds = %122, %116
-  br label %100, !llvm.loop !17
+120:                                              ; preds = %116
+  store float 0.000000e+00, ptr %7, align 4
+  br label %121
 
-124:                                              ; preds = %100
-  %125 = load ptr, ptr %2, align 8
-  store ptr %125, ptr %19, align 8
-  %126 = load ptr, ptr %3, align 8
-  store ptr %126, ptr %2, align 8
-  %127 = load ptr, ptr %19, align 8
-  store ptr %127, ptr %3, align 8
-  %128 = load float, ptr %6, align 4
-  %129 = fpext float %128 to double
-  %130 = fadd double %129, 5.000000e-02
-  %131 = fptrunc double %130 to float
-  store float %131, ptr %6, align 4
+121:                                              ; preds = %120, %116
+  br label %122
+
+122:                                              ; preds = %121, %115
+  br label %99, !llvm.loop !16
+
+123:                                              ; preds = %99
+  %124 = load ptr, ptr %2, align 8
+  store ptr %124, ptr %19, align 8
+  %125 = load ptr, ptr %3, align 8
+  store ptr %125, ptr %2, align 8
+  %126 = load ptr, ptr %19, align 8
+  store ptr %126, ptr %3, align 8
+  %127 = load float, ptr %6, align 4
+  %128 = fpext float %127 to double
+  %129 = fadd double %128, 5.000000e-02
+  %130 = fptrunc double %129 to float
+  store float %130, ptr %6, align 4
   br label %23
 }
 
@@ -982,4 +979,3 @@ attributes #4 = { nounwind }
 !14 = distinct !{!14, !7}
 !15 = distinct !{!15, !7}
 !16 = distinct !{!16, !7}
-!17 = distinct !{!17, !7}

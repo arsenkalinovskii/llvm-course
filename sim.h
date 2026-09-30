@@ -12,6 +12,7 @@ void simFlush();
 void simPutPixel(int x, int y, int argb);
 int simRand();
 int simHasClick();
+int simGetMouseState(int *, int *);
 int simHasScroll();
 int simGetClick();
 int simGetScroll();

@@ -128,7 +128,7 @@ float saturate(float u)
 
 void app(void)
 {
-    /* static */ float grids[2][SIM_X_SIZE][SIM_Y_SIZE];
+    float grids[2][SIM_X_SIZE][SIM_Y_SIZE];
     gridPtr grid1 = &grids[0], grid2 = &grids[1];
     initGrids(grids);
 
@@ -150,7 +150,7 @@ void app(void)
             }
         }
         simFlush();
-        while (simHasClick())
+        if (simHasClick())
         {
             int xy = simGetClick();
             int x = (xy >> 16);

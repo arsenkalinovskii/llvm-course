@@ -562,13 +562,13 @@ define dso_local void @app() local_unnamed_addr #6 {
   call void @llvm.memset.p0.i64(ptr noundef nonnull align 16 dereferenceable(2097152) %1, i8 0, i64 2097152, i1 false), !tbaa !9
   br label %3
 
-3:                                                ; preds = %76, %0
-  %4 = phi float [ 5.000000e-01, %0 ], [ %77, %76 ]
-  %5 = phi float [ 0.000000e+00, %0 ], [ %80, %76 ]
-  %6 = phi i32 [ 256, %0 ], [ %43, %76 ]
-  %7 = phi i32 [ 256, %0 ], [ %44, %76 ]
-  %8 = phi ptr [ %2, %0 ], [ %9, %76 ]
-  %9 = phi ptr [ %1, %0 ], [ %8, %76 ]
+3:                                                ; preds = %72, %0
+  %4 = phi float [ 5.000000e-01, %0 ], [ %73, %72 ]
+  %5 = phi float [ 0.000000e+00, %0 ], [ %76, %72 ]
+  %6 = phi i32 [ 256, %0 ], [ %52, %72 ]
+  %7 = phi i32 [ 256, %0 ], [ %53, %72 ]
+  %8 = phi ptr [ %2, %0 ], [ %9, %72 ]
+  %9 = phi ptr [ %1, %0 ], [ %8, %72 ]
   call void @emulationStep(ptr noundef %9, ptr noundef %8, float noundef %4, float noundef %5, i32 noundef %7, i32 noundef %6)
   br label %10
 
@@ -582,7 +582,7 @@ define dso_local void @app() local_unnamed_addr #6 {
   tail call void (...) @simFlush() #10
   %15 = tail call i32 (...) @simHasClick() #10
   %16 = icmp eq i32 %15, 0
-  br i1 %16, label %42, label %47
+  br i1 %16, label %51, label %42
 
 17:                                               ; preds = %28
   %18 = add nuw nsw i64 %11, 1
@@ -620,57 +620,53 @@ define dso_local void @app() local_unnamed_addr #6 {
   %41 = icmp eq i64 %40, 512
   br i1 %41, label %17, label %20, !llvm.loop !37
 
-42:                                               ; preds = %47, %14
-  %43 = phi i32 [ %6, %14 ], [ %56, %47 ]
-  %44 = phi i32 [ %7, %14 ], [ %57, %47 ]
-  %45 = tail call i32 (...) @simHasScroll() #10
-  %46 = icmp eq i32 %45, 0
-  br i1 %46, label %76, label %60
+42:                                               ; preds = %14
+  %43 = tail call i32 (...) @simGetClick() #10
+  %44 = ashr i32 %43, 16
+  %45 = and i32 %43, 65535
+  %46 = icmp ult i32 %44, 512
+  %47 = icmp samesign ult i32 %45, 512
+  %48 = select i1 %46, i1 %47, i1 false
+  %49 = select i1 %48, i32 %45, i32 %6
+  %50 = select i1 %48, i32 %44, i32 %7
+  br label %51
 
-47:                                               ; preds = %14, %47
-  %48 = phi i32 [ %57, %47 ], [ %7, %14 ]
-  %49 = phi i32 [ %56, %47 ], [ %6, %14 ]
-  %50 = tail call i32 (...) @simGetClick() #10
-  %51 = ashr i32 %50, 16
-  %52 = and i32 %50, 65535
-  %53 = icmp ult i32 %51, 512
-  %54 = icmp samesign ult i32 %52, 512
-  %55 = select i1 %53, i1 %54, i1 false
-  %56 = select i1 %55, i32 %52, i32 %49
-  %57 = select i1 %55, i32 %51, i32 %48
-  %58 = tail call i32 (...) @simHasClick() #10
-  %59 = icmp eq i32 %58, 0
-  br i1 %59, label %42, label %47, !llvm.loop !38
+51:                                               ; preds = %42, %14
+  %52 = phi i32 [ %49, %42 ], [ %6, %14 ]
+  %53 = phi i32 [ %50, %42 ], [ %7, %14 ]
+  %54 = tail call i32 (...) @simHasScroll() #10
+  %55 = icmp eq i32 %54, 0
+  br i1 %55, label %72, label %56
 
-60:                                               ; preds = %42, %72
-  %61 = phi float [ %73, %72 ], [ %4, %42 ]
-  %62 = tail call i32 (...) @simGetScroll() #10
-  %63 = mul nsw i32 %62, 5
-  %64 = sitofp i32 %63 to double
-  %65 = fdiv double %64, 1.000000e+02
-  %66 = fptrunc double %65 to float
-  %67 = fadd float %61, %66
-  %68 = fcmp ogt float %67, 1.000000e+00
-  br i1 %68, label %72, label %69
+56:                                               ; preds = %51, %68
+  %57 = phi float [ %69, %68 ], [ %4, %51 ]
+  %58 = tail call i32 (...) @simGetScroll() #10
+  %59 = mul nsw i32 %58, 5
+  %60 = sitofp i32 %59 to double
+  %61 = fdiv double %60, 1.000000e+02
+  %62 = fptrunc double %61 to float
+  %63 = fadd float %57, %62
+  %64 = fcmp ogt float %63, 1.000000e+00
+  br i1 %64, label %68, label %65
 
-69:                                               ; preds = %60
-  %70 = fcmp olt float %67, 0.000000e+00
-  br i1 %70, label %71, label %72
+65:                                               ; preds = %56
+  %66 = fcmp olt float %63, 0.000000e+00
+  br i1 %66, label %67, label %68
 
-71:                                               ; preds = %69
-  br label %72
+67:                                               ; preds = %65
+  br label %68
 
-72:                                               ; preds = %60, %69, %71
-  %73 = phi float [ %67, %69 ], [ 0.000000e+00, %71 ], [ 1.000000e+00, %60 ]
-  %74 = tail call i32 (...) @simHasScroll() #10
-  %75 = icmp eq i32 %74, 0
-  br i1 %75, label %76, label %60, !llvm.loop !39
+68:                                               ; preds = %56, %65, %67
+  %69 = phi float [ %63, %65 ], [ 0.000000e+00, %67 ], [ 1.000000e+00, %56 ]
+  %70 = tail call i32 (...) @simHasScroll() #10
+  %71 = icmp eq i32 %70, 0
+  br i1 %71, label %72, label %56, !llvm.loop !38
 
-76:                                               ; preds = %72, %42
-  %77 = phi float [ %4, %42 ], [ %73, %72 ]
-  %78 = fpext float %5 to double
-  %79 = fadd double %78, 5.000000e-02
-  %80 = fptrunc double %79 to float
+72:                                               ; preds = %68, %51
+  %73 = phi float [ %4, %51 ], [ %69, %68 ]
+  %74 = fpext float %5 to double
+  %75 = fadd double %74, 5.000000e-02
+  %76 = fptrunc double %75 to float
   br label %3
 }
 
@@ -750,4 +746,3 @@ attributes #10 = { nounwind }
 !36 = distinct !{!36, !17}
 !37 = distinct !{!37, !17}
 !38 = distinct !{!38, !17}
-!39 = distinct !{!39, !17}

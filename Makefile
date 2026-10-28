@@ -1,8 +1,9 @@
 APP_DIR = App
 PASS_DIR = Pass
+IRGEN_DIR = IRGen
 CC_FLAGS = -lSDL2 -lm -Wl,-z,stack-size=0x20000000
 
-all: appO2 appOs $(APP_DIR)/app $(PASS_DIR)/pass.so
+all: appO2 appOs $(APP_DIR)/app $(PASS_DIR)/pass.so $(IRGEN_DIR)/app_O2.gen $(IRGEN_DIR)/app.gen
 
 appO2: appO2.ll $(APP_DIR)/sim.c $(APP_DIR)/start.c $(PASS_DIR)/log.c
 	clang $^ $(CC_FLAGS) -DOPTIM_LEVEL=O2 -o $@
@@ -22,9 +23,13 @@ $(APP_DIR)/app:
 $(PASS_DIR)/pass.so:
 	$(MAKE) all -C $(PASS_DIR)
 
+$(IRGEN_DIR)/app_O2.gen:
+	$(MAKE) all -C $(IRGEN_DIR)
+
 clean:
 	-rm app*
 	-$(MAKE) clean -C $(APP_DIR)
 	-$(MAKE) clean -C $(PASS_DIR)
+	-$(MAKE) clean -C $(IRGEN_DIR)
 
 .PHONY: all clean

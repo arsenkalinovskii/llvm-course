@@ -1,9 +1,13 @@
 all: pass.so
 
+LLVM_CONFIG = $(shell llvm-config --includedir)
+CXX = clang++
+CC = clang
+
 pass.so: pass.cpp
-	clang++ pass.cpp -fPIC -shared -I$(shell llvm-config --includedir) -o pass.so
+	$(CXX) $< -fPIC -shared -I$(LLVM_CONFIG) -o $@
 
 clean:
-	rm pass.so
+	-rm pass.so
 
 .PHONY: all clean

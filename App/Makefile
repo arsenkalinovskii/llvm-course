@@ -1,20 +1,23 @@
 all: app app_O2.ll app_Os.ll
 
-CC_FLAGS = -lSDL2 -lm -Wl,-z,stack-size=0x20000000
+LINK_FLAGS = -lSDL2 -lm
+STACK_FLAGS = -Wl,-z,stack-size=0x20000000
+CXX = clang++
+CC = clang
 
 app: app.ll start.c sim.c
-	clang $^ $(CC_FLAGS) -o $@
+	$(CC) $^ $(LINK_FLAGS) $(STACK_FLAGS) -o $@
 
 app.ll: app.c
-	clang -emit-llvm -S $^ -o $@
+	$(CC) -emit-llvm -S $^ -o $@
 
 app_O2.ll: app.c
-	clang -emit-llvm -S $^ -o $@ -O2
+	$(CC) -emit-llvm -S $^ -o $@ -O2
 
 app_Os.ll: app.c
-	clang -emit-llvm -S $^ -o $@ -Os
+	$(CC) -emit-llvm -S $^ -o $@ -Os
 
 clean:
-	rm app *.ll
+	-rm app *.ll
 
 .PHONY: all clean

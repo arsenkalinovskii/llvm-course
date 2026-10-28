@@ -2,3 +2,5 @@
 ./appO2
 ./appOs
 ./Pass/pass.so
+./vscode/*
+./debugir/*

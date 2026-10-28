@@ -4,3 +4,5 @@
 ./Pass/pass.so
 ./vscode/*
 ./debugir/*
+./IRGen/app_O2.gen
+./IRGen/app.gen

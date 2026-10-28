@@ -140,8 +140,8 @@ namespace cpp_builder
                 std::string elements = "{";
                 if (C->getNumOperands() > 0) {
                     elements += llvm_get_value(*C->getOperand(0), F);
-                    for (unsigned i = 0; i < C->getNumOperands(); i++) {
-                        elements +=  ", " + llvm_get_value(*C->getOperand(i), F);
+                    for (int i = 1; i < C->getNumOperands(); i++) {
+                        elements += ", " + llvm_get_value(*C->getOperand(i), F);
                     }
                 }
                 elements += "}";
@@ -149,10 +149,10 @@ namespace cpp_builder
             })
             .Case<ConstantDataVector>([&](const ConstantDataVector *C) {
                 std::string elements = "{";
-                if (C->getNumOperands() > 0) {
-                    elements += llvm_get_value(*C->getOperand(0), F);
-                    for (unsigned i = 0; i < C->getNumOperands(); i++) {
-                        elements +=  ", " + llvm_get_value(*C->getOperand(i), F);
+                if (C->getNumElements() > 0) {
+                    elements += llvm_get_value(*C->getElementAsConstant(0), F);
+                    for (int i = 1; i < C->getNumElements(); i++) {
+                        elements += ", " + llvm_get_value(*C->getElementAsConstant(i), F);
                     }
                 }
                 elements += "}";
@@ -302,7 +302,7 @@ namespace cpp_builder
                 std::string args = "{";
                 if (C->arg_size() > 0) {
                     args += llvm_get_value(*C->getArgOperand(0), F);
-                    for (unsigned i = 1; i < C->arg_size(); i++) {
+                    for (int i = 1; i < C->arg_size(); i++) {
                         args += ", " + llvm_get_value(*C->getArgOperand(i), F);
                     }
                 }
@@ -360,7 +360,7 @@ namespace cpp_builder
                 auto shuffle_mask = I->getShuffleMask();
                 if (shuffle_mask.size() > 0) {
                     mask += std::to_string(shuffle_mask[0]);
-                    for (unsigned i = 1; i < shuffle_mask.size(); i++) {
+                    for (int i = 1; i < shuffle_mask.size(); i++) {
                         mask += ", " + std::to_string(shuffle_mask[i]);
                     }
                 }

@@ -138,31 +138,24 @@ namespace cpp_builder
             })
             .Case<ConstantVector>([&](const ConstantVector *C) {
                 std::string elements = "{";
-                for (unsigned i = 0; i < C->getNumOperands(); ++i) {
-                    if (i != 0)
-                        elements += ", ";
-                    elements += llvm_get_value(
-                        *C->getOperand(i), F
-                    );
+                if (C->getNumOperands() > 0) {
+                    elements += llvm_get_value(*C->getOperand(0), F);
+                    for (unsigned i = 0; i < C->getNumOperands(); i++) {
+                        elements +=  ", " + llvm_get_value(*C->getOperand(i), F);
+                    }
                 }
                 elements += "}";
-
                 return "ConstantVector::get(" + elements + ")";
             })
             .Case<ConstantDataVector>([&](const ConstantDataVector *C) {
                 std::string elements = "{";
-
-                for (unsigned i = 0; i < C->getNumElements(); ++i) {
-                    if (i != 0)
-                        elements += ", ";
-
-                    elements += llvm_get_value(
-                        *C->getElementAsConstant(i), F
-                    );
+                if (C->getNumOperands() > 0) {
+                    elements += llvm_get_value(*C->getOperand(0), F);
+                    for (unsigned i = 0; i < C->getNumOperands(); i++) {
+                        elements +=  ", " + llvm_get_value(*C->getOperand(i), F);
+                    }
                 }
-
                 elements += "}";
-
                 return "ConstantVector::get(" + elements + ")";
             })
             .Case<PoisonValue>([&](const PoisonValue *P) {
@@ -307,11 +300,11 @@ namespace cpp_builder
             })
             .Case<CallInst>([&](const CallInst *C) {
                 std::string args = "{";
-                for (unsigned i = 0; i < C->arg_size(); ++i) {
-                    if (i > 0)
-                        args += ", ";
-
-                    args += llvm_get_value(*C->getArgOperand(i), F);
+                if (C->arg_size() > 0) {
+                    args += llvm_get_value(*C->getArgOperand(0), F);
+                    for (unsigned i = 1; i < C->arg_size(); i++) {
+                        args += ", " + llvm_get_value(*C->getArgOperand(i), F);
+                    }
                 }
                 args += "}";
                 return "CreateCall("
@@ -364,17 +357,14 @@ namespace cpp_builder
             })
             .Case<ShuffleVectorInst>([&](const ShuffleVectorInst *I) {
                 std::string mask = "{";
-
-                auto shuffleMask = I->getShuffleMask();
-                for (unsigned i = 0; i < shuffleMask.size(); ++i) {
-                    if (i != 0)
-                        mask += ", ";
-
-                    mask += std::to_string(shuffleMask[i]);
+                auto shuffle_mask = I->getShuffleMask();
+                if (shuffle_mask.size() > 0) {
+                    mask += std::to_string(shuffle_mask[0]);
+                    for (unsigned i = 1; i < shuffle_mask.size(); i++) {
+                        mask += ", " + std::to_string(shuffle_mask[i]);
+                    }
                 }
-
                 mask += "}";
-
                 return "CreateShuffleVector("
                     + llvm_get_value(*I->getOperand(0), F) + ", "
                     + llvm_get_value(*I->getOperand(1), F) + ", "
